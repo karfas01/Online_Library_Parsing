@@ -34,6 +34,11 @@ for id in range(1, 11):
         response_page = requests.get(page_url)
         soup = BeautifulSoup(response_page.text, 'lxml')
 
+        comment_tags = soup.find_all(class_="texts")
+        comments = []
+        for comment_tag in comment_tags:
+            comments.append(comment_tag.find(class_="black").text)
+
         img_url = soup.find('div', class_="bookimage").find('img')['src']
         image_name = img_url.split("/")[-1]
         img_url = f"https://tululu.org{img_url}"
@@ -59,4 +64,4 @@ for id in range(1, 11):
         
 
     except:
-        print("Такой книги нет")
+        print()#"Такой книги нет")
