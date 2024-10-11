@@ -34,6 +34,14 @@ for id in range(1, 11):
         response_page = requests.get(page_url)
         soup = BeautifulSoup(response_page.text, 'lxml')
 
+        genre_tags = soup.find_all(class_="d_book")[1]
+        genrs_urls = genre_tags.find_all("a")
+        genrs = []
+        for genre_url in genrs_urls:
+            genrs.append(genre_url.text)
+        
+        
+
         comment_tags = soup.find_all(class_="texts")
         comments = []
         for comment_tag in comment_tags:
@@ -56,6 +64,8 @@ for id in range(1, 11):
         book_name = f"{title_split_text[0].strip()}"
         book_author = f"{title_split_text[1].strip()}"
 
+        print(f"Заголовок: {book_name} \n {genrs}")
+
         folder_book_name = Path("books")
         if not folder_book_name.exists():
             folder_book_name.mkdir()
@@ -64,4 +74,4 @@ for id in range(1, 11):
         
 
     except:
-        print()#"Такой книги нет")
+        print("Такой книги нет")
