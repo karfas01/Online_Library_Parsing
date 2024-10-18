@@ -1,6 +1,7 @@
 from bs4 import BeautifulSoup
 from pathlib import Path
 import requests
+import argparse
 
 
 def check_for_redirect(response):
@@ -8,8 +9,6 @@ def check_for_redirect(response):
         raise requests.HTTPError()
 
 def download_books(folder_name, book_name, response):
-    
-
     file_path = f"{folder_name}/{book_name}.txt"
     with open(file_path, 'wb') as file:
             file.write(response.content)
@@ -54,6 +53,13 @@ def parse_book_page(response_page):
     return book_params
 
 
+parser = argparse.ArgumentParser(description="программа для загрузки книг")
+parser.add_argument("start_id", help="начальный id книги")
+parser.add_argument("end_id", help="конечный id книги")
+args = parser.parse_args()
+start_id = int(args.start_id)
+end_id = int(args.end_id)
+
 book_url = "https://tululu.org/txt.php"
 
 folder_book_name = Path("books")
@@ -64,14 +70,12 @@ folder_name = Path("images")
 if not folder_name.exists():
     folder_name.mkdir()
 
-for id in range(1, 11):
+for id in range(start_id, end_id):
     page_url = f"https://tululu.org/b{id}/"
-
     try:
         params = {
             "id":id,
         }
-
         book_response = requests.get(book_url, params)
         book_response.raise_for_status()
         check_for_redirect(book_response)
@@ -87,7 +91,6 @@ for id in range(1, 11):
         img_url = f"https://tululu.org{img_url}"
         download_images(folder_name, image_name, img_url)
 
-        print(f"Заголовок: {book_params["tittle"]} \n {book_params["genre"]}")
-
+        print(f"Заголовок: {book_params["tittle"]} \n Автор: {book_params["autor"]}")
     except:
         print("Такой книги нет")
