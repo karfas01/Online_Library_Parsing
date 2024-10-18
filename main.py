@@ -54,8 +54,8 @@ def parse_book_page(response_page):
 
 
 parser = argparse.ArgumentParser(description="программа для загрузки книг")
-parser.add_argument("start_id", help="начальный id книги")
-parser.add_argument("end_id", help="конечный id книги")
+parser.add_argument("-start_id", help="начальный id книги")
+parser.add_argument("-end_id", help="конечный id книги")
 args = parser.parse_args()
 start_id = int(args.start_id)
 end_id = int(args.end_id)
