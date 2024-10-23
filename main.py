@@ -81,6 +81,7 @@ for id in range(start_id, end_id):
         check_for_redirect(book_response)
 
         response_page = requests.get(page_url)
+        check_for_redirect(response_page)
         book_params = parse_book_page(response_page)
 
         book_name = book_params["tittle"]
