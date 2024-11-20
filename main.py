@@ -8,10 +8,12 @@ def check_for_redirect(response):
     if response.history:
         raise requests.HTTPError()
 
+
 def download_books(folder_name, book_name, response):
     file_path = f"{folder_name}/{book_name}.txt"
     with open(file_path, 'wb') as file:
             file.write(response.content)
+
 
 def download_images(folder_name, image_name, img_url):
     response = requests.get(img_url)
@@ -20,6 +22,7 @@ def download_images(folder_name, image_name, img_url):
     file_path = f"{folder_name}/{image_name}"
     with open(file_path, 'wb') as file:
             file.write(response.content)
+
 
 def parse_book_page(response_page):
     soup = BeautifulSoup(response_page.text, 'lxml')
@@ -53,45 +56,50 @@ def parse_book_page(response_page):
     return book_params
 
 
-parser = argparse.ArgumentParser(description="программа для загрузки книг")
-parser.add_argument("-start_id", help="начальный id книги")
-parser.add_argument("-end_id", help="конечный id книги")
-args = parser.parse_args()
-start_id = int(args.start_id)
-end_id = int(args.end_id)
+def main():
+    parser = argparse.ArgumentParser(description="программа для загрузки книг")
+    parser.add_argument("-start_id", help="начальный id книги")
+    parser.add_argument("-end_id", help="конечный id книги")
+    args = parser.parse_args()
+    start_id = int(args.start_id)
+    end_id = int(args.end_id)
 
-book_url = "https://tululu.org/txt.php"
+    book_url = "https://tululu.org/txt.php"
 
-folder_book_name = Path("books")
-if not folder_book_name.exists():
-    folder_book_name.mkdir()  
+    folder_book_name = Path("books")
+    if not folder_book_name.exists():
+        folder_book_name.mkdir()  
 
-folder_name = Path("images")
-if not folder_name.exists():
-    folder_name.mkdir()
+    folder_name = Path("images")
+    if not folder_name.exists():
+        folder_name.mkdir()
 
-for id in range(start_id, end_id):
-    page_url = f"https://tululu.org/b{id}/"
-    try:
-        params = {
-            "id":id,
-        }
-        book_response = requests.get(book_url, params)
-        book_response.raise_for_status()
-        check_for_redirect(book_response)
+    for id in range(start_id, end_id):
+        page_url = f"https://tululu.org/b{id}/"
+        try:
+            params = {
+                "id":id,
+            }
+            book_response = requests.get(book_url, params)
+            book_response.raise_for_status()
+            check_for_redirect(book_response)
 
-        response_page = requests.get(page_url)
-        check_for_redirect(response_page)
-        book_params = parse_book_page(response_page)
+            response_page = requests.get(page_url)
+            check_for_redirect(response_page)
+            book_params = parse_book_page(response_page)
 
-        book_name = book_params["tittle"]
-        download_books(folder_book_name, book_name, book_response)
+            book_name = book_params["tittle"]
+            download_books(folder_book_name, book_name, book_response)
 
-        img_url = book_params["img_url"]
-        image_name = img_url.split("/")[-1]
-        img_url = f"https://tululu.org{img_url}"
-        download_images(folder_name, image_name, img_url)
+            img_url = book_params["img_url"]
+            image_name = img_url.split("/")[-1]
+            img_url = f"https://tululu.org{img_url}"
+            download_images(folder_name, image_name, img_url)
 
-        print(f"Заголовок: {book_params["tittle"]} \n Автор: {book_params["autor"]}")
-    except:
-        print("Такой книги нет")
+            print(f"Заголовок: {book_params["tittle"]} \n Автор: {book_params["autor"]}")
+        except:
+            print("Такой книги нет")
+
+
+if __name__ == '__main__':
+     main()
