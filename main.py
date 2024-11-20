@@ -58,11 +58,11 @@ def parse_book_page(response_page):
 
 def main():
     parser = argparse.ArgumentParser(description="программа для загрузки книг")
-    parser.add_argument("-start_id", help="начальный id книги")
-    parser.add_argument("-end_id", help="конечный id книги")
+    parser.add_argument("--start_id",default=1, type=int, help="начальный id книги")
+    parser.add_argument("--end_id",default=10, type=int, help="конечный id книги")
     args = parser.parse_args()
-    start_id = int(args.start_id)
-    end_id = int(args.end_id)
+    start_id = args.start_id
+    end_id = args.end_id
 
     book_url = "https://tululu.org/txt.php"
 
