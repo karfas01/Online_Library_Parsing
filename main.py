@@ -2,6 +2,7 @@ from bs4 import BeautifulSoup
 from pathlib import Path
 import requests
 import argparse
+import os
 
 
 def check_for_redirect(response):
@@ -67,12 +68,10 @@ def main():
     book_url = "https://tululu.org/txt.php"
 
     folder_book_name = Path("books")
-    if not folder_book_name.exists():
-        folder_book_name.mkdir()  
+    os.makedirs(folder_book_name, exist_ok=True)
 
     folder_name = Path("images")
-    if not folder_name.exists():
-        folder_name.mkdir()
+    os.makedirs(folder_name, exist_ok=True)
 
     for id in range(start_id, end_id):
         page_url = f"https://tululu.org/b{id}/"
