@@ -84,6 +84,7 @@ def main():
             check_for_redirect(book_response)
 
             response_page = requests.get(page_url)
+            response_page.raise_for_status()
             check_for_redirect(response_page)
             book_params = parse_book_page(response_page)
 
