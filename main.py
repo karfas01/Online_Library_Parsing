@@ -73,11 +73,11 @@ def main():
     folder_name = Path("images")
     os.makedirs(folder_name, exist_ok=True)
 
-    for id in range(start_id, end_id):
+    for number in range(start_id, end_id):
         page_url = f"https://tululu.org/b{id}/"
         try:
             params = {
-                "id":id,
+                "id":number,
             }
             book_response = requests.get(book_url, params)
             book_response.raise_for_status()
