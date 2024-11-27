@@ -10,13 +10,13 @@ def check_for_redirect(response):
         raise requests.HTTPError
 
 
-def download_books(folder_name, book_name, response):
+def download_book(folder_name, book_name, response):
     file_path = f"{folder_name}/{book_name}.txt"
     with open(file_path, 'wb') as file:
             file.write(response.content)
 
 
-def download_images(folder_name, image_name, img_url):
+def download_image(folder_name, image_name, img_url):
     response = requests.get(img_url)
     response.raise_for_status()
     
@@ -87,12 +87,12 @@ def main():
             book_params = parse_book_page(response_page)
 
             book_name = book_params["tittle"]
-            download_books(folder_book_name, book_name, book_response)
+            download_book(folder_book_name, book_name, book_response)
 
             img_url = book_params["img_url"]
             image_name = img_url.split("/")[-1]
             img_url = f"https://tululu.org{img_url}"
-            download_images(folder_name, image_name, img_url)
+            download_image(folder_name, image_name, img_url)
 
             print(f"Заголовок: {book_params["tittle"]} \n Автор: {book_params["autor"]}")
         except requests.exceptions.HTTPError:
