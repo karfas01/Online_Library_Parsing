@@ -7,7 +7,7 @@ import os
 
 def check_for_redirect(response):
     if response.history:
-        raise requests.HTTPError()
+        raise requests.HTTPError
 
 
 def download_books(folder_name, book_name, response):
@@ -34,23 +34,21 @@ def parse_book_page(response_page):
     book_name = f"{title_split_text[0].strip()}"
     book_author = f"{title_split_text[1].strip()}"
 
-    genre_tags = soup.find_all(class_="d_book")[1]
-    genrs_urls = genre_tags.find_all("a")
-    genrs = []
-    for genre_url in genrs_urls:
-        genrs.append(genre_url.text)
+    genres = soup.select("d_book a")
+    
+    genres = [genre.text for genre in genres]
+    comments = [
+        comment_tag.find(class_="black").text 
+        for comment_tag in soup.find_all(class_="texts")
+    ]
 
-    comment_tags = soup.find_all(class_="texts")
-    comments = []
-    for comment_tag in comment_tags:
-        comments.append(comment_tag.find(class_="black").text)
 
     img_url = soup.find('div', class_="bookimage").find('img')['src']
 
     book_params = {
          "tittle": book_name,
          "autor": book_author,
-         "genre": genrs,
+         "genre": genres,
          "coments": comments,
          "img_url": img_url,
     }
@@ -74,7 +72,7 @@ def main():
     os.makedirs(folder_name, exist_ok=True)
 
     for number in range(start_id, end_id):
-        page_url = f"https://tululu.org/b{id}/"
+        page_url = f"https://tululu.org/b{number}/"
         try:
             params = {
                 "id":number,
@@ -97,7 +95,7 @@ def main():
             download_images(folder_name, image_name, img_url)
 
             print(f"Заголовок: {book_params["tittle"]} \n Автор: {book_params["autor"]}")
-        except:
+        except requests.exceptions.HTTPError:
             print("Такой книги нет")
 
 
