@@ -1,3 +1,4 @@
+from urllib.parse import urljoin
 from bs4 import BeautifulSoup
 from pathlib import Path
 import requests
@@ -91,7 +92,7 @@ def main():
 
             img_url = book_params["img_url"]
             image_name = img_url.split("/")[-1]
-            img_url = f"https://tululu.org{img_url}"
+            img_url = urljoin(page_url, img_url)
             download_image(folder_name, image_name, img_url)
 
             print(f"Заголовок: {book_params["tittle"]} \n Автор: {book_params["autor"]}")
