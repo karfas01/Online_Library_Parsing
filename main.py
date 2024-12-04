@@ -1,3 +1,4 @@
+from pathvalidate import sanitize_filename
 from urllib.parse import urljoin
 from bs4 import BeautifulSoup
 from pathlib import Path
@@ -34,7 +35,7 @@ def parse_book_page(response_page):
     title_tag = soup.find('td', class_='ow_px_td').find('h1')
     title_text = title_tag.text
     title_split_text = title_text.split(" :: ")
-    book_name = f"{title_split_text[0].strip()}"
+    book_name = sanitize_filename(f"{title_split_text[0].strip()}")
     book_author = f"{title_split_text[1].strip()}"
 
     genres = soup.select("d_book a")
