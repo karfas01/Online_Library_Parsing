@@ -86,21 +86,22 @@ def main():
             response_page.raise_for_status()
             check_for_redirect(response_page)
             
+            book_params = parse_book_page(response_page)
+
+            book_name = book_params["tittle"]
+            download_book(folder_book_name, book_name, book_response)
+
+            img_url = book_params["img_url"]
+            image_name = img_url.split("/")[-1]
+            img_url = urljoin(page_url, img_url)
+            download_image(folder_name, image_name, img_url)
+
         except requests.exceptions.HTTPError:
             print("Такой книги нет")
+            
 
-        book_params = parse_book_page(response_page)
-
-        book_name = book_params["tittle"]
-        download_book(folder_book_name, book_name, book_response)
-
-        img_url = book_params["img_url"]
-        image_name = img_url.split("/")[-1]
-        img_url = urljoin(page_url, img_url)
-        download_image(folder_name, image_name, img_url)
 
         print(f"Заголовок: {book_params["tittle"]} \n Автор: {book_params["autor"]}")
-
 
 if __name__ == '__main__':
      main()
