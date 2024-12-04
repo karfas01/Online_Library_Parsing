@@ -3,6 +3,8 @@ from bs4 import BeautifulSoup
 from pathlib import Path
 import requests
 import argparse
+import time
+import sys
 import os
 
 
@@ -99,7 +101,9 @@ def main():
         except requests.exceptions.HTTPError:
             print("Такой книги нет")
             
-
+        except requests.exceptions.ConnectionError:
+             sys.stderr("ошибка сети")
+             time.sleep(10)
 
         print(f"Заголовок: {book_params["tittle"]} \n Автор: {book_params["autor"]}")
 
